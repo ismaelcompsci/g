@@ -33,6 +33,7 @@ function convertGapToProps(gap?: Gap) {
       // Use CSS variables for gap values at different breakpoints
       acc[`--gap-${breakpoint}`] = convertNumberIntoPx(value);
       return acc;
+      // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
     }, {} as Record<string, Object>);
   }
   return {};

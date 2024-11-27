@@ -1,17 +1,16 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
-
+import { VariableSizeGrid as Grid } from "react-window";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { icons, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
+import { createElement, useMemo, useRef, useState } from "react";
 
 type IconName = keyof typeof icons;
 
@@ -20,11 +19,13 @@ interface IconPickerProps {
 }
 
 export function IconPicker({ onSelect }: IconPickerProps) {
-  const [open, setOpen] = React.useState(false);
-  const [selectedIcon, setSelectedIcon] = React.useState<IconName | null>(null);
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<IconName | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredIcons = React.useMemo(() => {
+  const gridRef = useRef<Grid | null>(null);
+
+  const filteredIcons = useMemo(() => {
     return Object.entries(icons).filter(([name]) =>
       name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -35,6 +36,12 @@ export function IconPicker({ onSelect }: IconPickerProps) {
     onSelect?.(iconName);
     setOpen(false);
   };
+
+  const ICON_SIZE = 40;
+  const SCROLLBAR_WIDTH = 8;
+
+  const getColumnWidth = () => ICON_SIZE;
+  const getRowHeight = () => ICON_SIZE;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +54,7 @@ export function IconPicker({ onSelect }: IconPickerProps) {
         >
           {selectedIcon ? (
             <>
-              {React.createElement(icons[selectedIcon])}
+              {createElement(icons[selectedIcon])}
               <span className="ml-2">{selectedIcon}</span>
             </>
           ) : (
@@ -55,37 +62,59 @@ export function IconPicker({ onSelect }: IconPickerProps) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-2">
-        <div className="relative flex flex-row items-center">
-          <Search className="absolute w-3 h-3 ml-2 text-muted-foreground" />
-          <Input
-            className="h-7 pl-6"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <ScrollArea className="h-[300px] flex flex-row items-center justify-center">
-          <div className="flex flex-wrap p-2">
-            {filteredIcons.map((icon) => {
-              const name = icon[0] as IconName;
-              const Icon = icon[1];
-              return (
-                <div
-                  key={name}
-                  onSelect={() => handleSelectIcon(name)}
-                  className="cursor-pointer flex items-center justify-center rounded-md hover:bg-accent w-6 h-6"
-                >
-                  <Icon
-                    className={cn(
-                      "h-4 w-4",
-                      selectedIcon === name && "text-primary"
-                    )}
-                  />
-                </div>
-              );
-            })}
+      <PopoverContent className="w-[312px]">
+        <div className="space-y-2">
+          <div className="relative flex flex-row items-center">
+            <Search className="absolute w-3 h-3 ml-2 text-muted-foreground" />
+            <Input
+              className="h-7 pl-6"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-        </ScrollArea>
+          <div className="h-[200px] w-[312px]">
+            <AutoSizer>
+              {({ height, width }) => {
+                const columnCount = Math.floor(width / ICON_SIZE);
+                const rowCount = Math.ceil(filteredIcons.length / columnCount);
+                const gridWidth = width - SCROLLBAR_WIDTH;
+
+                return (
+                  <Grid
+                    className="no-scrollbars"
+                    ref={gridRef}
+                    height={height}
+                    width={gridWidth}
+                    columnWidth={getColumnWidth}
+                    rowHeight={getRowHeight}
+                    columnCount={columnCount}
+                    rowCount={rowCount}
+                  >
+                    {({ columnIndex, rowIndex, style }) => {
+                      const index = rowIndex * columnCount + columnIndex;
+                      const lucideIcon = filteredIcons[index];
+
+                      if (!lucideIcon) return null;
+
+                      const [iconName, Icon] = lucideIcon;
+
+                      return (
+                        <button
+                          key={`${iconName}-${index}`}
+                          style={style}
+                          className="rounded-md hover:bg-muted flex flex-col justify-center items-center w-full h-full"
+                          onClick={() => handleSelectIcon(iconName as IconName)}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </button>
+                      );
+                    }}
+                  </Grid>
+                );
+              }}
+            </AutoSizer>
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );

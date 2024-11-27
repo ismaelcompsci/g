@@ -6,6 +6,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html, 
+body {
+    height: 100%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -382,4 +387,25 @@ body {
   body {
     @apply bg-background-100 text-foreground;
   }
+}
+
+.no-scrollbars{
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &::-webkit-scrollbar {
+    width: 1px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+}
+
+.no-scrollbars::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
 }

@@ -25,7 +25,7 @@ export function BookCustomizer() {
     "The user experience of the Frontend Cloud"
   );
 
-  const [width, setWidth] = useState(196);
+  const [width] = useState(196);
   const height = (width * 60) / 49;
 
   const [color, setColor] = useState("#3f3f3f");
