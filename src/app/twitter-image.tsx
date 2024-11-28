@@ -12,8 +12,5 @@ export const size = {
 
 // Image generation
 export default async function Image() {
-  return await GenerateImage({
-    title: "Book",
-    description: "Book PNG Generator",
-  });
+  return await GenerateImage();
 }

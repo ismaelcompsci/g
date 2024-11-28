@@ -8,10 +8,7 @@ export const size = {
 };
 
 // Image generation
-export async function GenerateImage(params: {
-  title: string;
-  description?: string;
-}) {
+export async function GenerateImage() {
   const url = getURL();
   return new ImageResponse(
     (
