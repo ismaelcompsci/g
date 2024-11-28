@@ -1,3 +1,4 @@
+import { getURL } from "next/dist/shared/lib/utils";
 import { ImageResponse } from "next/og";
 
 // Image metadata
@@ -11,38 +12,32 @@ export async function GenerateImage(params: {
   title: string;
   description?: string;
 }) {
+  const url = getURL();
   return new ImageResponse(
     (
-      // ImageResponse JSX element
       <div
         style={{
-          fontSize: 160,
-          background: "black",
-          width: "100%",
           height: "100%",
+          width: "100%",
           display: "flex",
-          textAlign: "center",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: "#000000",
+          fontWeight: 600,
           color: "white",
-          fontFamily: "Inter, sans-serif",
+          gap: 24,
         }}
       >
-        <div
+        <img src={url + "/og.png"} width={254} />
+
+        <span
           style={{
-            display: "flex",
-            flexDirection: "column",
-            textAlign: "center",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 4,
+            fontSize: 24,
           }}
         >
-          <span style={{ fontWeight: 600 }}>{params.title}</span>
-          <span style={{ fontSize: 40, fontWeight: 300 }}>
-            {params.description}
-          </span>
-        </div>
+          Gesit Book PNG Generator
+        </span>
       </div>
     ),
     // ImageResponse options
