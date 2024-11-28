@@ -64,6 +64,7 @@ export function Book({
   variant = "stripe",
   textureAssetUrl = "url(https://assets.vercel.com/image/upload/v1720554484/front/design/book-texture.avif)",
   illustration,
+  flat = false,
 }: {
   title: string;
   width?: number;
@@ -73,6 +74,7 @@ export function Book({
   variant?: BookVariant;
   illustration?: React.ReactNode;
   textureAssetUrl?: string;
+  flat?: boolean;
 }) {
   const { shouldRotate } = useMemo(
     () =>
@@ -153,11 +155,12 @@ export function Book({
           )}
         </Stack>
 
-        {/* pages */}
-        <Pages />
-
-        {/* back */}
-        <BookBack />
+        {flat === false && (
+          <>
+            <Pages />
+            <BookBack />
+          </>
+        )}
       </div>
     </div>
   );

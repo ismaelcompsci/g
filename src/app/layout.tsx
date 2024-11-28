@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Book",
-  description: "Create a book",
+  title: "Book PNG Generator",
+  description: "PNG Generator",
 };
 
 export default function RootLayout({
