@@ -46,7 +46,7 @@ export function BookCustomizer() {
   return (
     <div className="flex gap-12">
       {/* Controls Panel */}
-      <Card className="p-6 w-80">
+      <Card className="p-6">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Book Title</Label>
@@ -110,7 +110,7 @@ export function BookCustomizer() {
           <div>
             <ScaleSelector
               title="Export Scale"
-              options={[1, 2, 4, 6]}
+              options={[1, 2, 4, 8, 16, 32, 64]}
               selected={scale}
               onChange={setScale}
               customValue={customScale}
@@ -124,7 +124,7 @@ export function BookCustomizer() {
 
           <ConvertToPngButton
             title={title}
-            scale={customScale}
+            scale={effectiveScale}
             height={height}
             width={width}
             container={containerRef}

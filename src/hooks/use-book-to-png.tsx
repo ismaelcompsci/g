@@ -35,7 +35,6 @@ export const useBookToPng = (props: {
 
     try {
       if (!props.container) {
-        console.log("RETURNINT NMOS");
         return;
       }
 
